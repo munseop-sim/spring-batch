@@ -13,8 +13,6 @@ spring:
       path: '/h2-console'
   jpa:
     show-sql: true
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -25,12 +23,20 @@ spring:
         order_updates: true
         physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
-#        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+  #        dialect: org.hibernate.dialect.H2Dialect
   #    defer-datasource-initialization: true
   batch:
     jdbc:
       initialize-schema: always
 
+feign:
+  client:
+    config:
+      log-client:  # 특정 FeignClient가 아닌 모든 Client에 대해 적용하고자 하는 경우 default 입력
+        logger-level: basic
+  httpclient:
+    connection-timeout: 1000
 
 data:
   meta-datasource: #primary로 등록, 배치 DB 접속
@@ -44,3 +50,14 @@ data:
     jdbc-url: "jdbc:h2:mem:test1"
     username: test1
     password:
+  weather-datasource:
+    driver-class-name: org.h2.Driver
+    jdbc-url: "jdbc:h2:mem:weather"
+    username: weather
+    password:
+    init-script: "weather-dml.sql"
+
+
+external-api-key:
+  data-go-kr: # https://www.data.go.kr/data/15084084/openapi.do 요청 인증키
+
