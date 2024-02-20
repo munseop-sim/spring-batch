@@ -1,0 +1,46 @@
+server:
+  port: 9099
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  h2:
+    console:
+      enabled: true
+      path: '/h2-console'
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000
+        show_sql: true
+        use-sql-comments: true
+        order_inserts: true
+        order_updates: true
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+#        dialect: org.hibernate.dialect.H2Dialect
+  #    defer-datasource-initialization: true
+  batch:
+    jdbc:
+      initialize-schema: always
+
+
+data:
+  meta-datasource: #primary로 등록, 배치 DB 접속
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://localhost:3306/batch-test"
+    jdbc-url: "jdbc:mysql://localhost:3306/batch-test"
+    username: root
+    password: #비밀번호
+  test1-datasource:
+    driver-class-name: org.h2.Driver
+    jdbc-url: "jdbc:h2:mem:test1"
+    username: test1
+    password:
