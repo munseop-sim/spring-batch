@@ -1,5 +1,7 @@
 package spring.ms2709.batch.global.infrastructure.config.datasource
 
+import com.querydsl.jpa.impl.JPAQueryFactory
+import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings
@@ -9,7 +11,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.DataSourceTransactionManager
@@ -27,7 +28,6 @@ import javax.sql.DataSource
  * @modified
  */
 @Configuration
-@EnableJpaAuditing
 @EnableJpaRepositories(
     basePackages = ["spring.ms2709.batch.test1"],
     entityManagerFactoryRef = Test1DataSourceConfig.TEST1_ENTITY_MANAGER_FACTORY,
@@ -44,16 +44,18 @@ class Test1DataSourceConfig(
     }
 
 
-    @Bean(TEST1_ENTITY_MANAGER_FACTORY)
+    @Bean(name= [TEST1_ENTITY_MANAGER_FACTORY])
     fun test1EntityManagerFactory(builder: EntityManagerFactoryBuilder): LocalContainerEntityManagerFactoryBean {
         val properties = hibernateProperties.determineHibernateProperties(
             jpaProperties.properties,
             HibernateSettings()
         )
+        properties["hibernate.hbm2ddl.auto"] = "create"
+        properties["hibernate.dialect"] = "org.hibernate.dialect.H2Dialect"
         return builder.dataSource(test1DataSource())
             .properties(properties)
             .packages("spring.ms2709.batch.test1")
-            .persistenceUnit("test1Master")
+            .persistenceUnit(TEST1_JPA_UNIT_NAME)
             .build()
     }
 
@@ -82,11 +84,21 @@ class Test1DataSourceConfig(
         return NamedParameterJdbcTemplate(test1DataSource())
     }
 
+    @Bean(TEST1_JPA_QUERY_FACTORY)
+    fun test1JpaQueryFactory(
+        @Qualifier(TEST1_ENTITY_MANAGER_FACTORY)entityManager: EntityManager
+    ):JPAQueryFactory{
+        return JPAQueryFactory(entityManager)
+    }
+
     companion object{
-        const val TEST1_ENTITY_MANAGER_FACTORY = "test1EntityManagerFactory"
-        const val TEST1_JPA_TRANSACTION_MANAGER = "test1JpaTransactionManager"
         const val TEST1_DATASOURCE_TRANSACTION_MANAGER = "test1DataSourceTransactionManager"
         const val TEST1_JDBC_TEMPLATE = "test1JdbcTemplate"
         const val TEST1_DATASOURCE = "test1DataSource"
+
+        const val TEST1_ENTITY_MANAGER_FACTORY = "test1EntityManagerFactory"
+        const val TEST1_JPA_TRANSACTION_MANAGER = "test1JpaTransactionManager"
+        const val TEST1_JPA_QUERY_FACTORY="test1JpaQueryFactory"
+        private const val TEST1_JPA_UNIT_NAME = "test1Master"
     }
 }

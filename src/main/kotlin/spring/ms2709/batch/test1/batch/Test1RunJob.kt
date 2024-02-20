@@ -7,16 +7,10 @@ import org.springframework.batch.core.launch.JobLauncher
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import spring.ms2709.batch.global.extension.yyyyMMddWithTime
+import java.time.LocalDateTime
 
 /**
- *
- * 클래스 설명
- *
- * 사용 예 :
- * <pre>
- *   클래스 사용 예제
- *
- * </pre>
  *
  * @class Test1RunJob
  * @author 심문섭
@@ -32,7 +26,7 @@ class Test1RunJob(
     @Scheduled(cron = "0 0/1 * * * ?")
     fun runJob(){
         val params: JobParameters = JobParametersBuilder()
-            .addString("JobID", System.currentTimeMillis().toString())
+            .addString("JobID",LocalDateTime.now().yyyyMMddWithTime())
             .toJobParameters()
         jobLauncher.run(job, params)
     }

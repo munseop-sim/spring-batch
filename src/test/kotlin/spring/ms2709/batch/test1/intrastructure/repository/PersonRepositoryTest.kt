@@ -9,6 +9,7 @@ import org.springframework.test.annotation.Commit
 import org.springframework.transaction.annotation.Transactional
 import spring.ms2709.batch.global.infrastructure.config.datasource.Test1DataSourceConfig
 import spring.ms2709.batch.test1.intrastructure.entity.Person
+import spring.ms2709.batch.test1.intrastructure.entity.QPerson
 
 /**
  *

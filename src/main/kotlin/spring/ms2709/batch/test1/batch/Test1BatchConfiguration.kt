@@ -9,7 +9,6 @@ package spring.ms2709.batch.test1.batch
  * @modified
  */
 
-import jakarta.persistence.EntityManagerFactory
 import org.slf4j.LoggerFactory
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.Step
@@ -31,7 +30,6 @@ import spring.ms2709.batch.test1.intrastructure.repository.PersonRepository
 
 @Configuration
 class Test1BatchConfiguration(
-    @Qualifier(Test1DataSourceConfig.TEST1_ENTITY_MANAGER_FACTORY) private val entityManagerFactory: EntityManagerFactory,
     private val personRepository: PersonRepository
 ) {
 
@@ -92,7 +90,7 @@ class Test1BatchConfiguration(
 //        Tasklet: 한 가지 이상의 CRUD가 발생(=비즈니스 로직)하는 task에 대해 일괄적으로 처리하는 경우, 채택한다. (복잡한 로직을 수행해야 하는 job일 경우, 채택)
 //        Chunk: chunk 단위로 처리할 모든 record를 쭉 읽어들인 후, 모두 읽어들이는데 성공하면 한번에 Write하는 방식 (대용량 데이터에 대해 단순 처리할 경우, 채택)
         val step = StepBuilder("step1",jobRepository)
-            .chunk<Person, Person>(10,jpaTransactionManager)
+            .chunk<Person, Person>(2,jpaTransactionManager)
             .reader(reader())
             .processor(Test1PersonItemProcessor())
             .writer(writer())
