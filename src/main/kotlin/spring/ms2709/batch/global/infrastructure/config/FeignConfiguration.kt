@@ -15,5 +15,6 @@ import org.springframework.context.annotation.Configuration
  */
 @EnableFeignClients(basePackages = ["spring.ms2709.batch.external"])
 @Configuration
-class FeignConfiguration {
+class FeignConfiguration() {
+
 }

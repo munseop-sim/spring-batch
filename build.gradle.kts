@@ -4,6 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Version{
 	const val openFeign = "4.1.0"
 	const val queryDsl = "5.1.0"
+	const val jacksonModuleKotlin="2.16.1"
+	const val feignJackson = "13.2.1"
 }
 
 plugins {
@@ -14,6 +16,7 @@ plugins {
 	kotlin("plugin.jpa") version "1.9.22"
 	kotlin("kapt") version "1.9.22"
 	kotlin("plugin.noarg") version "1.9.22" // noarg 추가를 위함 by reflection
+	kotlin("plugin.allopen") version "1.9.22"
 }
 
 allOpen {
@@ -24,6 +27,7 @@ allOpen {
 
 noArg {
 	annotation("jakarta.persistence.Entity")
+	annotation("com.fasterxml.jackson.annotation.JsonCreator")
 }
 
 configurations {
@@ -56,12 +60,13 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${Version.jacksonModuleKotlin}")
 	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:${Version.openFeign}")
-	implementation("io.github.openfeign:feign-jackson:10.1.0")
+	implementation("io.github.openfeign:feign-jackson:${Version.feignJackson}")
 
 	implementation("com.querydsl:querydsl-jpa:${Version.queryDsl}:jakarta")
+//	implementation("com.querydsl:querydsl-sql:${Version.queryDsl}")
 	kapt ("com.querydsl:querydsl-apt:${Version.queryDsl}:jakarta")
 	kapt ("jakarta.annotation:jakarta.annotation-api")
 	kapt ("jakarta.persistence:jakarta.persistence-api")
@@ -86,4 +91,11 @@ tasks.withType<JavaCompile>() {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+
+buildscript {
+	dependencies {
+		classpath("org.jetbrains.kotlin:kotlin-noarg")
+	}
 }
