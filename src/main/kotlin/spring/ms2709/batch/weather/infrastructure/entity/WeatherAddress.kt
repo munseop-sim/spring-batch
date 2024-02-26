@@ -1,7 +1,9 @@
 package spring.ms2709.batch.weather.infrastructure.entity
 
 import jakarta.persistence.*
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 
 /**
  *
@@ -31,8 +33,23 @@ class WeatherAddress {
     @Column(name = "wa_y")
     var waY:Int? = null
 
+    @Column(name = "wc_code")
+    var wcCode:Int? = null
+
+    @CreatedDate
+    @Column(name="created_time")
+    var createdTime: LocalDateTime? = null
+
+    constructor(waAddress: String?, waX: Int?, waY: Int?, wcCode: Int?) {
+        this.waAddress = waAddress
+        this.waX = waX
+        this.waY = waY
+        this.wcCode = wcCode
+    }
+
+
     override fun toString(): String {
-        return "WeatherAddress(waId=$waId, waAddress=$waAddress, waX=$waX, waY=$waY)"
+        return "WeatherAddress(waId=$waId, waAddress=$waAddress, waX=$waX, waY=$waY, wcCode=$wcCode)"
     }
 
 

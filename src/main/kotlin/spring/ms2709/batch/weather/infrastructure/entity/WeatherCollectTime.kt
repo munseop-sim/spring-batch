@@ -28,9 +28,6 @@ class WeatherCollectTime {
     @Column(name = "wct_address", columnDefinition = "varchar(255)")
     var wctAddress:String? = null
 
-    @Column(name = "wct_location")
-    var wctLocation:String? = null
-
     @Column(name = "wct_measure_time")
     var measureTime:LocalDateTime? = null
 
@@ -40,10 +37,29 @@ class WeatherCollectTime {
     @Column(name = "wct_rain_type")
     var rainType:String? = null
 
-    @Column(name = "wct_total_data_json")
+    @Column(name = "wct_total_data_json", columnDefinition = "json")
     var totalData:String? = null
 
     @CreatedDate
     var createdTime:LocalDateTime? = null
+
+    constructor(
+        wctAddress: String?,
+        measureTime: LocalDateTime?,
+        temperature: Double?,
+        rainType: String?,
+        totalData: String?
+    ) {
+        this.wctAddress = wctAddress
+        this.measureTime = measureTime
+        this.temperature = temperature
+        this.rainType = rainType
+        this.totalData = totalData
+    }
+
+    override fun toString(): String {
+        return "WeatherCollectTime(wctId=$wctId, wctAddress=$wctAddress, measureTime=$measureTime, temperature=$temperature, rainType=$rainType, totalData=$totalData, createdTime=$createdTime)"
+    }
+
 
 }

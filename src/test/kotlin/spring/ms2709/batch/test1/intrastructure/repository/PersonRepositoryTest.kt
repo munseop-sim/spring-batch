@@ -1,15 +1,14 @@
 package spring.ms2709.batch.test1.intrastructure.repository
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.Commit
 import org.springframework.transaction.annotation.Transactional
 import spring.ms2709.batch.global.infrastructure.config.datasource.Test1DataSourceConfig
+import spring.ms2709.batch.global.infrastructure.delegate.LogDelegate
 import spring.ms2709.batch.test1.intrastructure.entity.Person
-import spring.ms2709.batch.test1.intrastructure.entity.QPerson
 
 /**
  *
@@ -30,9 +29,9 @@ import spring.ms2709.batch.test1.intrastructure.entity.QPerson
 @Transactional(transactionManager = Test1DataSourceConfig.TEST1_JPA_TRANSACTION_MANAGER)
 @SpringBootTest
 class PersonRepositoryTest @Autowired constructor(val sut: PersonRepository) {
-    private val log  = LoggerFactory.getLogger(PersonRepository::class.java)
+    private val log  by LogDelegate()
 
-    @Commit
+    @DisplayName("Person을 INSERT 할 수 있다.")
     @Test
     fun insertTest(){
         //given
@@ -43,11 +42,10 @@ class PersonRepositoryTest @Autowired constructor(val sut: PersonRepository) {
 
 
         //when
-        val saved = sut.save(person)
-        sut.flush()
+        val result = sut.save(person)
 
         //then
-        assertThat(saved).isNotNull
-        log.info(saved.toString())
+        assertThat(result.personId).isNotNull
+        log.info("result -> {}", result)
     }
 }

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository
 import spring.ms2709.batch.global.infrastructure.config.datasource.WeatherDataSourceConfig
 import spring.ms2709.batch.weather.infrastructure.entity.QWeatherAddress
 import spring.ms2709.batch.weather.infrastructure.entity.WeatherAddress
-import spring.ms2709.batch.weather.infrastructure.repository.WeatherAddressRepository
 
 /**
  *
@@ -19,26 +18,22 @@ import spring.ms2709.batch.weather.infrastructure.repository.WeatherAddressRepos
  * @modified
  */
 interface WeatherAddressSimpleQuery {
-    fun getAll():List<WeatherAddress>
+    fun getAll(pageSize:Int,pageIndex:Int):List<WeatherAddress>
 }
 
 
 @Repository
 class WeatherAddressSimpleQueryImpl(
     @Qualifier(WeatherDataSourceConfig.WEATHER_JPA_QUERY_FACTORY) private val  jpaQueryFactory: JPAQueryFactory,
-    private val weatherAddressRepository: WeatherAddressRepository,
-
 ):WeatherAddressSimpleQuery{
     private val tblWeatherAddress = QWeatherAddress.weatherAddress!!
 
-    override fun getAll(): List<WeatherAddress> {
-        return jpaQueryFactory.selectFrom(tblWeatherAddress).fetch()
+
+
+    override fun getAll(pageSize: Int, pageIndex: Int): List<WeatherAddress> {
+        return jpaQueryFactory.selectFrom(tblWeatherAddress)
+            .offset(pageIndex * pageSize.toLong())
+            .limit(pageSize.toLong())
+            .fetch()
     }
 }
-
-
-data class GatheringTarget(
-    val address:String,
-    val x:Int,
-    val y:Int
-)

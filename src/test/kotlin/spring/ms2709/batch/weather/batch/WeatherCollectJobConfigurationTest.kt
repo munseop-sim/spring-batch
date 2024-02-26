@@ -11,11 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
-import org.springframework.transaction.annotation.Transactional
-import spring.ms2709.batch.global.infrastructure.config.BatchConfiguration
-import spring.ms2709.batch.global.infrastructure.config.datasource.MetaDataSourceConfig
-import spring.ms2709.batch.global.infrastructure.config.datasource.WeatherDataSourceConfig
-import spring.ms2709.batch.weather.infrastructure.entity.WeatherAddress
 import spring.ms2709.batch.weather.infrastructure.repository.WeatherAddressRepository
 
 
@@ -23,20 +18,20 @@ import spring.ms2709.batch.weather.infrastructure.repository.WeatherAddressRepos
  *
  * 클래스 설명
  *
- * @class WeatherBatchConfigurationTest
+ * @class WeatherCollectJobConfigurationTest
  * @author 심문섭
  * @version 1.0
  * @since 2024-02-20 오후 3:52
  * @modified
  */
 
-@ComponentScan(basePackages = ["spring.ms2709.batch.weather"])
+@ComponentScan(basePackages = ["spring.ms2709.batch.weather", "spring.ms2709.batch.external"])
 @EnableAutoConfiguration
 @SpringBatchTest
-@SpringBootTest(classes = [BatchConfiguration::class, WeatherDataSourceConfig::class, MetaDataSourceConfig::class])
-class WeatherBatchConfigurationTest{
+@SpringBootTest //(classes = [BatchConfiguration::class, WeatherDataSourceConfig::class, MetaDataSourceConfig::class, WeatherApi::class])
+class WeatherCollectJobConfigurationTest{
     @Autowired
-    @Qualifier(WeatherBatchConfiguration.WEATHER_COLLECT_JOB_NAME)
+    @Qualifier(WeatherCollectJobConfiguration.WEATHER_COLLECT_JOB_NAME)
     lateinit var sut: Job
 
     @Autowired

@@ -2,6 +2,7 @@ package spring.ms2709.batch.external
 
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.stereotype.Component
@@ -14,17 +15,8 @@ import spring.ms2709.batch.global.extension.yyyyMMdd
 import java.time.LocalDateTime
 
 /**
- *
- * 클래스 설명
- *
- * 사용 예 :
- * <pre>
- *   클래스 사용 예제
- *
- * </pre>
- *
  * @class WeatherApi
- * @author 심문섭, ms2709@a2dcorp.co.kr
+ * @author 심문섭
  * @version 1.0
  * @since 2024-01-23 오후 3:04
  * @modified
@@ -54,7 +46,7 @@ data class WeatherBodyItem<T>(
 
 @FeignClient(name = "k-weather", url="https://apis.data.go.kr")
 interface WeatherClient{
-    @GetMapping("/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst")
+    @GetMapping("/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst", produces = ["application/json"])
     fun getTimeWeather(
         @RequestParam serviceKey:String,
         @RequestParam pageNo:Int = 1,
@@ -104,27 +96,22 @@ class WeatherApiImpl(
         )
 
         val items = apiResponse.result.body?.items?.item ?: mutableListOf()
-        val firstItem = items.first()
+        val firstItem = items.firstOrNull() ?: return null
         val measureTime = firstItem.run {
              this.baseDate?.toLocalDate()
         }?.let {
             LocalDateTime.of(it, firstItem.baseTime?.toLocalTime())
         }
-
+        val  temperature = items.firstOrNull { it.categoryVal == TimeWeatherBodyDetailItemCategoryTypes.T1H }?.let { it.obsrValue?.toFloat() }
+        if(temperature == null || temperature < -100){
+            return null
+        }
         return TimeWeatherResult(
             location = param.locationName,
             measureTime = measureTime ?: param.targetTime,
-            temperature = items.firstOrNull { it.categoryVal == TimeWeatherBodyDetailItemCategoryTypes.T1H }?.let { it.obsrValue?.toFloat() },
+            temperature= temperature,
             rainType = items.firstOrNull { it.categoryVal == TimeWeatherBodyDetailItemCategoryTypes.PTY }?.let {   PTYValueType.getByCode(it.obsrValue?.toInt() ?: -1)?.caption },
-            totalData = items.mapNotNull {
-                "${it.categoryVal?.caption ?: ""}: ${it.getValue()}".run {
-                    if(this.isNullOrBlank()){
-                        null
-                    }else{
-                        this
-                    }
-                }
-            }.joinToString(",")
+            totalData = jacksonObjectMapper().writeValueAsString(items)
         )
     }
 

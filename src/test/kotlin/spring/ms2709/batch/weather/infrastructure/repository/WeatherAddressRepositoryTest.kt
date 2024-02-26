@@ -1,11 +1,14 @@
 package spring.ms2709.batch.weather.infrastructure.repository
 
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.Commit
 import org.springframework.transaction.annotation.Transactional
 import spring.ms2709.batch.global.infrastructure.config.datasource.WeatherDataSourceConfig
+import spring.ms2709.batch.global.infrastructure.delegate.LogDelegate
+import spring.ms2709.batch.weather.infrastructure.entity.WeatherAddress
 
 /**
  *
@@ -23,9 +26,21 @@ class WeatherAddressRepositoryTest @Autowired constructor(
     private val sut:WeatherAddressRepository
 ){
 
-    @Commit
+    private val log by LogDelegate()
+
+    @DisplayName("WeatherAddress을 INSERT 할 수 있다.")
     @Test
     fun insertTest(){
+        //given
+        val entity = WeatherAddress("test", 1,2,3)
 
+        //when
+        val result = sut.save(entity)
+
+        //then
+        assertThat(result.waId).isNotNull()
+        log.info("result -> {}", result)
     }
+
+
 }

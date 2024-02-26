@@ -80,8 +80,6 @@ class WeatherDataSourceConfig (
         }
     }
 
-
-
     @Bean(name=[WEATHER_DATASOURCE_TRANSACTION_MANAGER])
     fun weatherTransactionManager(): PlatformTransactionManager {
         //DataSourceTransactionManager는 Spring의 JDBC를 지원하는 트랜잭션 매니저
@@ -100,8 +98,6 @@ class WeatherDataSourceConfig (
     ): JPAQueryFactory {
         return JPAQueryFactory(entityManager)
     }
-
-
 
     companion object{
         const val WEATHER_DATASOURCE_TRANSACTION_MANAGER = "weatherDataSourceTransactionManager"
