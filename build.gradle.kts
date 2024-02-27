@@ -6,6 +6,7 @@ object Version{
 	const val queryDsl = "5.1.0"
 	const val jacksonModuleKotlin="2.16.1"
 	const val feignJackson = "13.2.1"
+	const val redisson = "3.27.0"
 }
 
 plugins {
@@ -70,6 +71,10 @@ dependencies {
 	kapt ("com.querydsl:querydsl-apt:${Version.queryDsl}:jakarta")
 	kapt ("jakarta.annotation:jakarta.annotation-api")
 	kapt ("jakarta.persistence:jakarta.persistence-api")
+
+	// https://mvnrepository.com/artifact/org.redisson/redisson
+	implementation("org.redisson:redisson:${Version.redisson}")
+
 
 //	runtimeOnly("com.mysql:mysql-connector-j")
 	runtimeOnly("com.h2database:h2")
