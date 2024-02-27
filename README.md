@@ -13,4 +13,11 @@
 5. Schedule
 6. TestCode
    
-  
+## 데이터베이스 
+1. H2 (in-memory) 
+- 별도 설정 필요없음
+2. mysql (docker)
+- https://github.com/munseop-sim/spring-batch/wiki/docker#redis
+3. redis (docker)
+- https://github.com/munseop-sim/spring-batch/wiki/docker#mysql
+
